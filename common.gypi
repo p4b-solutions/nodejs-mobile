@@ -510,6 +510,7 @@
           ['_toolset=="target"', {
             'defines': [ '_GLIBCXX_USE_C99_MATH' ],
             'libraries': [ '-llog' ],
+            'ldflags': [ '-Wl,-z,max-page-size=16384' ],
           }],
           ['_type=="loadable_module"', {
             'conditions': [

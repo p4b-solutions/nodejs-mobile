@@ -55,7 +55,7 @@ else:
 print("\033[92mInfo: \033[0m" + "Configuring for " + DEST_CPU + "...")
 
 if platform.system() == "Darwin":
-    host_os = "darwin"
+    host_os = "mac"
     toolchain_path = android_ndk_path + "/toolchains/llvm/prebuilt/darwin-x86_64"
 
 elif platform.system() == "Linux":
@@ -65,6 +65,9 @@ elif platform.system() == "Linux":
 os.environ['PATH'] += os.pathsep + toolchain_path + "/bin"
 os.environ['CC'] = toolchain_path + "/bin/" + TOOLCHAIN_PREFIX + android_sdk_version + "-" +  "clang"
 os.environ['CXX'] = toolchain_path + "/bin/" + TOOLCHAIN_PREFIX + android_sdk_version + "-" + "clang++"
+os.environ['AR'] = toolchain_path + "/bin/llvm-ar"
+os.environ['RANLIB'] = toolchain_path + "/bin/llvm-ranlib"
+os.environ['LDFLAGS'] = "-Wl,-z,max-page-size=16384"
 # nodejs-mobile patch: add host CC and CXX
 os.environ['CC_host'] = os.popen('command -v gcc').read().strip()
 os.environ['CXX_host'] = os.popen('command -v g++').read().strip()
@@ -75,6 +78,7 @@ GYP_DEFINES += " android_target_arch=" + arch
 GYP_DEFINES += " host_os=" + host_os + " OS=android"
 GYP_DEFINES += " ANDROID_NDK_ROOT=" + android_ndk_path
 GYP_DEFINES += " ANDROID_NDK_SYSROOT=" + toolchain_path + "/sysroot"
+GYP_DEFINES += " ldflags=-Wl,-z,max-page-size=16384"
 os.environ['GYP_DEFINES'] = GYP_DEFINES
 
 if os.path.exists("./configure"):

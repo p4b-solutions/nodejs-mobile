@@ -169,3 +169,5 @@ __pycache__
 
 # === Rules for C++ development ===
 compile_commands.json
+
+android-ndk-*

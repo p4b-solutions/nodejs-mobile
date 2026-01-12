@@ -29,7 +29,20 @@ BUILD_ARCH() {
 
   # Compile
   eval '"./android-configure" "$ANDROID_NDK_PATH" $ANDROID_SDK_VERSION $TARGET_ARCH'
-  make -j $(getconf _NPROCESSORS_ONLN)
+
+  # Patch Makefile to disable Thin Archives (not supported by macOS host implementation of ar/ld)
+  # Using perl for portability across macOS/Linux
+  perl -pi -e 's/crsT/crs/g' out/Makefile
+
+  HOST_OS=$(uname -s)
+  if [ "$HOST_OS" == "Darwin" ]; then
+      TOOLCHAIN_HOST="darwin-x86_64"
+  elif [ "$HOST_OS" == "Linux" ]; then
+      TOOLCHAIN_HOST="linux-x86_64"
+  fi
+  NDK_AR="${ANDROID_NDK_PATH}/toolchains/llvm/prebuilt/${TOOLCHAIN_HOST}/bin/llvm-ar"
+  
+  make AR="${NDK_AR}" -j $(getconf _NPROCESSORS_ONLN)
 
   # Move binaries
   TARGET_ARCH_FOLDER="$TARGET_ARCH"
