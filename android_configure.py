@@ -71,6 +71,7 @@ os.environ['LDFLAGS'] = "-Wl,-z,max-page-size=16384"
 # nodejs-mobile patch: add host CC and CXX
 os.environ['CC_host'] = os.popen('command -v gcc').read().strip()
 os.environ['CXX_host'] = os.popen('command -v g++').read().strip()
+os.environ['AR_host'] = os.popen('command -v ar').read().strip()
 
 GYP_DEFINES = "target_arch=" + arch
 GYP_DEFINES += " v8_target_arch=" + arch
